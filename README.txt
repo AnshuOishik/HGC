@@ -46,10 +46,9 @@ Execution Command:
 Reference-based:
   Compression:
   > java -Xms12g hgc.HGC chrHg comp 4 15 1 1
-java hgc.HGC chr comp 4 4 1 1
+
   Decompression:
   > java -Xms4g hgc.HGC chrHg decomp 15 1 1
-java hgc.HGC chr decomp 4 1 1
 
 Notice:
 # argument 1 "comp" is the argument for compression, argument 0 "chr" is the file containing the names of the files to be compressed, argument 2 "4" is the thread pool size, argument 3 "4" is the k-mer length, argument 4 "1" is a flag for reference based compression, argument 5 "1" is for DNA compression.
@@ -58,10 +57,9 @@ Notice:
 Reference-free:
 Compression:
 > java -Xms12g hgc.HGC In comp 4 15 0 4 1
-java hgc.HGC InDna comp 2 4 0 2 1
+
 Decompression:
 > java -Xms4g hgc.HGC Out decomp 15 0 4 1
-java hgc.HGC Out decomp 4 0 2 1
 
 Notice:
 # argument 1 "comp" is the argument for compression, argument 0 "In" is the desired name for the compressed file, argument 2 "4" is the thread pool size, argument 3 "4" is the k-mer length, argument 4 "0" is a flag for reference free compression, argument 5 "4" is the number of desired target files, argument 6 "1" for DNA compression.
