@@ -47,8 +47,8 @@ Reference-based:
   > java -Xms4g hgc.HGC chrHg decomp 15 1 1
 
 Notice:
-# argument 1 "comp" is the argument for compression, argument 0 "chr" is the file containing the names of the files to be compressed, argument 2 "4" is the thread pool size, argument 3 "4" is the k-mer length, argument 4 "1" is a flag for reference based compression, argument 5 "1" is for DNA compression.
-# argument 1 "decomp" is the argument for decompression, argument 0 "chr" is the file containing the names of the files, argument 2 "4" is the k-mer length, argument 3 "1" is a flag for reference based compression, argument 4 "1" for DNA compression
+# argument 1 "comp" is the argument for compression, argument 0 "chr" is the file containing the names of the files to be compressed, argument 2 "4" is the thread pool size, argument 3 "4" is the k-mer length, argument 4 "1" is a flag for reference based compression, argument 5 "1" is for DNA/"0" for RNA compression.
+# argument 1 "decomp" is the argument for decompression, argument 0 "chr" is the file containing the names of the files, argument 2 "4" is the k-mer length, argument 3 "1" is a flag for reference based compression, argument 4 "1" for DNA/"0" for RNA compression
 
 Reference-free:
 Compression:
@@ -58,8 +58,8 @@ Decompression:
 > java -Xms4g hgc.HGC Out decomp 15 0 4 1
 
 Notice:
-# argument 1 "comp" is the argument for compression, argument 0 "In" is the desired name for the compressed file, argument 2 "4" is the thread pool size, argument 3 "4" is the k-mer length, argument 4 "0" is a flag for reference free compression, argument 5 "4" is the number of desired target files, argument 6 "1" for DNA compression.
-# argument 1 "decomp" is the argument for decompression, argument 0 "Out" is the name for the output file, argument 2 "4" is the k-mer length, argument 3 "0" is a flag for reference free compression, argument 4 "4" is the number of split/target files, argument 5 "1" for DNA compression
+# argument 1 "comp" is the argument for compression, argument 0 "In" is the desired name for the compressed file, argument 2 "4" is the thread pool size, argument 3 "4" is the k-mer length, argument 4 "0" is a flag for reference free compression, argument 5 "4" is the number of desired target files, argument 6 "1" for DNA/"0" for RNA compression.
+# argument 1 "decomp" is the argument for decompression, argument 0 "Out" is the name for the output file, argument 2 "4" is the k-mer length, argument 3 "0" is a flag for reference free compression, argument 4 "4" is the number of split/target files, argument 5 "1" for DNA/"0" for RNA compression
 
 # Please execute the procedure listed at the end of this file to create an executable file for the BSC compressor
 # In the last phase, an alternative is to utilize a 7-zip compressor; the procedure is described at the end of this file
