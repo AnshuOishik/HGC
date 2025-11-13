@@ -1,35 +1,50 @@
-				       ****************************** OptK-mer & HGC ****************************
-								OptK-mer: Optimal k-mer Length
-								HGC: Hybrid Genome Compression
-								https://github.com/AnshuOishik/HGC
-									Copyright (C) 2025 
-=============================================================================================================================
-Introduction
-To utilize the code, please use the Notepad++ editor.
-Java has been utilized by us in the implementation.
-Please use Linux or Windows as your operating system.
-=============================================================================================================================
-OptK-mer: Optimal k-mer Length
+# HGC: Hybrid Genome Compression Using Optimal k-mer Length
+
+## Supporting Platform
+
+- Linux
+- Windows
+
+## Tech Stack
+
+Java 
+
+## Supported File Formats
+
+- Genome main domian of FASTA/Q and Multi-FASTA
+- Genome main domian raw sequence files
+
+
+## OptK-mer: Optimal k-mer Length
 The OptK-mer algorithm used the randomization method to determine the ideal k-mer length. HGC uses the ideal k-mer length discovered using OptK-mer to compress the particular sequence.
 
-# Compilation Command:
-> javac -d . *.java
+## Compilation Command
 
-# Execution Command:
+```sh
+$ javac -d . *.java
+```
 
-Reference-based:
-> java -Xms10240m optkmer.Main chr 9 22 4 1
+## Execution Command
 
-Reference-free:
-> java -Xms10240m optkmer.Main chr 9 22 4 0 4
+Reference-based
 
-Notice:
-# -Xms10240m is the initial allocation of memory (MB)
-# The list of target file directories and the reference file path (the first line) are both found in chr
-# The k-mer length's lower and upper bounds are 9 and 22
-# The number of threads is eight (4, by default, is the optional value)
-# then it is a flag 0 or 1 for refence free or reference based
-# then for reference based the 4 is the number of splits
+```sh
+$ java -Xms10240m optkmer.Main chr 9 22 4 1
+```
+
+Reference-free
+
+```sh
+$ java -Xms10240m optkmer.Main chr 9 22 4 0 4
+```
+
+## Notice
+1. -Xms10240m is the initial allocation of memory (MiB)
+2. The list of target file directories and the reference file path (the first line) are both found in chr
+3. The k-mer length's lower and upper bounds are 9 and 22
+4. The number of threads is eight (4, by default, is the optional value)
+5. then it is a flag 0 or 1 for refence free or reference based
+6. then for reference based the 4 is the number of splits
 =============================================================================================================================
 HGC: Hybrid Genome Compression
 The OptK-mer technique yields the ideal k-mer length, which is used by HGC to compress sequences.
