@@ -7,7 +7,7 @@
 
 ## Tech Stack
 
-Java 
+Java 18
 
 ## Supported File Formats
 
