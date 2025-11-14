@@ -35,16 +35,17 @@ $ java -Xms10240m optkmer.Main chr 9 22 4 1
 Reference-free
 
 ```sh
-$ java -Xms10240m optkmer.Main chr 9 22 4 0 4
+$ java -Xms10240m optkmer.Main In 4 22 4 0 4
 ```
 
 ## Notice
 1. -Xms10240m is the initial allocation of memory (MiB)
-2. The list of target file directories and the reference file path (the first line) are both found in the file chr
-3. The k-mer length's lower and upper bounds are 9 and 22
-4. The number of threads is eight (4, by default, is the optional value)
-5. Then it is a flag 1 or 0 for reference-based or refence-free
-6. Then for reference-free the 4 is the number of splits
+2. For referential compression, the list of target file directories and the reference file path (the first line) are both found in the file chr.
+3. For reference-free compression, In is the input file to compress.
+4. The k-mer length's lower and upper bounds are 4 and 22
+5. The number of threads is eight (4, by default, is the optional value)
+6. Then it is a flag 1 or 0 for reference-based or refence-free
+7. Then for reference-free the 4 is the number of splits
 
 ## HGC: Hybrid Genome Compression
 The OptK-mer technique yields the ideal k-mer length, which is used by HGC to compress sequences.
