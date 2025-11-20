@@ -29,13 +29,13 @@ $ javac -d . *.java
 Reference-based
 
 ```sh
-$ java optkmer.Main chr 4 22 8 1
+$ java optkmer.Main chr 2 22 8 1
 ```
 
 Reference-free
 
 ```sh
-$ java optkmer.Main In 4 22 2 0 1
+$ java optkmer.Main In 2 22 2 0 1
 ```
 
 ## Notice
