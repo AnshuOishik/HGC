@@ -62,13 +62,13 @@ $ javac -d . *.java
 Compression
 
 ```sh
-$ java -Xms12g hgc.HGC chr comp 4 15 1 1
+$ java hgc.HGC chr comp 4 15 1 1
 ```
 
 Decompression
 
 ```sh
-$ java -Xms4g hgc.HGC chr decomp 15 1 1
+$ java hgc.HGC chr decomp 15 1 1
 ```
 
 ## Notice
@@ -80,13 +80,13 @@ $ java -Xms4g hgc.HGC chr decomp 15 1 1
 Compression
 
 ```sh
-$ java -Xms12g hgc.HGC In comp 4 15 0 4 1
+$ java hgc.HGC In comp 4 15 0 4 1
 ```
 
 Decompression
 
 ```sh
-$ java -Xms4g hgc.HGC Out decomp 15 0 4 1
+$ java hgc.HGC Out decomp 15 0 4 1
 ```
 
 ## Notice
