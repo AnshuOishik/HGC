@@ -70,7 +70,7 @@ $ java hgc.HGC chr decomp 15 1 1
 ```
 
 ## Notice
-1. Argument 0 "chr" is the file containing the names of the files to be compressed, argument 1 "comp" is the argument for compression,  argument 2 "4" is the thread pool size, argument 3 "15" is the k-mer length, argument 4 "1" is a flag for reference-based compression, argument 5 "1" is for DNA and "0" for RNA sequence compression.
+1. Argument 0 "chr" is the file containing the names of the files to be compressed (the first line is the reference file name), argument 1 "comp" is the argument for compression,  argument 2 "4" is the thread pool size, argument 3 "15" is the k-mer length, argument 4 "1" is a flag for reference-based compression, argument 5 "1" is for DNA and "0" for RNA sequence compression.
 2. Argument 0 "chr" is the file containing the names of the files, argument 1 "decomp" is the argument for decompression, argument 2 "15" is the k-mer length, argument 3 "1" is a flag for reference-based compression, argument 4 "1" for DNA and "0" for RNA sequence compression
 
 ## Reference-free
