@@ -60,17 +60,17 @@ $ javac -d . *.java
 Compression
 
 ```sh
-$ java hgc.HGC chr comp 4 15 1 1
+$ java hgc.HGC chr comp 8 11 1 1
 ```
 
 Decompression
 
 ```sh
-$ java hgc.HGC chr decomp 15 1 1
+$ java hgc.HGC chr decomp 11 1 1
 ```
 
 ## Notice
-1. Argument 0 "chr" is the file containing the names of the files to be compressed (the first line is the reference file name), argument 1 "comp" is the argument for compression,  argument 2 "4" is the thread pool size, argument 3 "15" is the k-mer length, argument 4 "1" is a flag for reference-based compression, argument 5 "1" is for DNA and "0" for RNA sequence compression.
+1. Argument 0 "chr" is the file containing the names of the files to be compressed (the first line is the reference file name), argument 1 "comp" is the argument for compression,  argument 2 "8" is the thread pool size, argument 3 "11" is the k-mer length, argument 4 "1" is a flag for reference-based compression, argument 5 "1" is for DNA and "0" for RNA sequence compression.
 2. Argument 0 "chr" is the file containing the names of the files, argument 1 "decomp" is the argument for decompression, argument 2 "15" is the k-mer length, argument 3 "1" is a flag for reference-based compression, argument 4 "1" for DNA and "0" for RNA sequence compression
 
 ## Reference-free
@@ -88,13 +88,12 @@ $ java hgc.HGC Out decomp 11 0 1 1
 ```
 
 ## Notice
-1. Argument 0 "In" is the name of the to-be-compressed sequence, argument 1 "comp" is the argument for compression, argument 2 "4" is the thread pool size, argument 3 "15" is the k-mer length, argument 4 "0" is a flag for reference-free compression, argument 5 "4" is the number of desired target files, argument 6 "1" for DNA and "0" for RNA compression.
-2. Argument 0 "Out" is the name for the compressed output file, argument 1 "decomp" is the argument for decompression, argument 2 "15" is the k-mer length, argument 3 "0" is a flag for reference-free compression, argument 4 "4" is the number of split/target files, argument 5 "1" for DNA and "0" for RNA sequence compression.
+1. Argument 0 "In" is the name of the to-be-compressed sequence, argument 1 "comp" is the argument for compression, argument 2 "2" is the thread pool size, argument 3 "11" is the k-mer length, argument 4 "0" is a flag for reference-free compression, argument 5 "1" is the number of desired target files, argument 6 "1" for DNA and "0" for RNA compression.
+2. Argument 0 "Out" is the name for the compressed output file, argument 1 "decomp" is the argument for decompression, argument 2 "11" is the k-mer length, argument 3 "0" is a flag for reference-free compression, argument 4 "1" is the number of split/target files, argument 5 "1" for DNA and "0" for RNA sequence compression.
 3. Please execute the procedure listed at https://github.com/AnshuOishik/RGCOK to create an executable file for the BSC compressor.
 4. In the last phase, an alternative is to utilize a 7-zip compressor; the procedure is described at https://github.com/AnshuOishik/RGCOK.
 5. The final compressed file created by the bsc compressor is called "BscC.bsc".
 6. "ZipC.7z" is the name of the compressed file that the 7-zip compressor produced at the end.
-7. The number of threads is eight (4, by default, is the optional value).
-8. -Xms10240m is the initial allocation of memory (MiB)
-9. Please place the executable "bsc" and "7za" in the main class file's directory
-10. For "bsc" and "7za" modes, kindly set "chmod 0777"
+7. The number of threads is two/eight (4, by default, is the optional value).
+8. Please place the executable "bsc" and "7za" in the main class file's directory
+9. For "bsc" and "7za" modes, kindly set "chmod 0777"
