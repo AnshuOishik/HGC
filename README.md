@@ -92,7 +92,7 @@ $ java hgc.HGC Out decomp 11 0 1 1
 2. Argument 0 "Out" is the name for the compressed output file, argument 1 "decomp" is the argument for decompression, argument 2 "11" is the k-mer length, argument 3 "0" is a flag for reference-free compression, argument 4 "1" is the number of split/target files, argument 5 "1" for DNA and "0" for RNA sequence compression.
 3. Please execute the procedure listed at https://github.com/AnshuOishik/RGCOK to create an executable file for the BSC compressor.
 4. In the last phase, an alternative is to utilize a 7-zip compressor; the procedure is described at https://github.com/AnshuOishik/RGCOK.
-5. The final compressed file created by the bsc compressor is called "BscC.bsc".
+5. The final compressed file created by the bsc compressor is called "HGC.bsc".
 6. "ZipC.7z" is the name of the compressed file that the 7-zip compressor produced at the end.
 7. The number of threads is two/eight (4, by default, is the optional value).
 8. Please place the executable "bsc" and "7za" in the main class file's directory
