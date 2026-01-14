@@ -39,7 +39,7 @@ $ java optkmer.Main In 2 22 2 0 1
 ## Notice
 1. For referential compression, the list of target file directories and the reference file path (the first line) are both found in the file chr.
 2. For reference-free compression, In is the input file to compress.
-3. The k-mer length's lower and upper bounds are 4 and 22.
+3. The k-mer length's lower and upper bounds are 2 and 22.
 4. The number of threads is eight/two (4, by default, is the optional value).
 5. Then it is a flag 1 or 0 for reference-based or refence-free.
 6. Then for reference-free the 1 is the number of splits.
