@@ -78,13 +78,13 @@ $ java hgc.HGC chr decomp 15 1 1
 Compression
 
 ```sh
-$ java hgc.HGC In comp 4 15 0 4 1
+$ java hgc.HGC In comp 2 11 0 1 1
 ```
 
 Decompression
 
 ```sh
-$ java hgc.HGC Out decomp 15 0 4 1
+$ java hgc.HGC Out decomp 11 0 1 1
 ```
 
 ## Notice
