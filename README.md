@@ -42,7 +42,7 @@ $ java optkmer.Main In 2 22 2 0 1
 3. The k-mer length's lower and upper bounds are 2 and 22.
 4. The number of threads is eight/two (4, by default, is the optional value).
 5. Then it is a flag 1 or 0 for reference-based or refence-free.
-6. Then for reference-free the 1 is the number of splits.
+6. Then for reference-free the 1 is the number of split.
 
 ## HGC: Hybrid Genome Compression
 The OptK-mer technique yields the ideal k-mer length, which is used by HGC to compress sequences.
