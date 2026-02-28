@@ -97,3 +97,6 @@ $ java hgc.HGC Out decomp 11 0 1 1
 7. The number of threads is two/eight (4, by default, is the optional value).
 8. Please place the executable "bsc" and "7za" in the main class file's directory
 9. For "bsc" and "7za" modes, kindly set "chmod 0777"
+
+## Contacts 
+Please send an email to <subhankar.roy07@gmail.com> if you experience any issues.
