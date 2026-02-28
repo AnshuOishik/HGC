@@ -2,8 +2,7 @@ package hgc;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;  // Import List
+import java.util.*;
 
 class HGC {
 	static List<Double> cpuUsages = new ArrayList<>();
@@ -108,7 +107,7 @@ class HGC {
         int number_of_splits = args[1].equals("comp")?Integer.parseInt(args[5]):Integer.parseInt(args[4]);  // number of splits for the remaining 80%
         int dr =args[1].equals("comp")?Integer.parseInt(args[6]):Integer.parseInt(args[5]);;
 		if (args[1].equals("comp")) {
-            
+            System.out.println("Only the primary bases of the raw, FASTA/Q or multi-FASTA file can be compressed using HGC!.");
             double beforeUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             Long start_time = System.currentTimeMillis();
             System.out.println("Compression Started...");
@@ -128,8 +127,9 @@ class HGC {
 	        recordCpuUsage(1, command);
             // Compression using bsc encoder
             HGCCompress.bscCompression();
+			//HGCCompress.sevenZipCompression();
             recordCpuUsage(1, command);
-            calculateAverageCpuUsage();
+            calculatePeakCpuUsage();
             
 
              // Delete files in seq_paths
@@ -138,10 +138,10 @@ class HGC {
             }
 
             Long end_time = System.currentTimeMillis();
-            System.out.println("Total compression time = " + (1.0 * end_time - start_time) / 1000 + " S");
+            System.out.println("Total compression time = " + (1.0 * end_time - start_time) / 1000 + " s");
             double afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             double actualMemUsed = afterUsedMem - beforeUsedMem;
-            System.out.printf("Actual memory used = %.3f GB\n", (actualMemUsed / 1024 / 1024 / 1024));
+            System.out.printf("Actual memory used = %.3f GiB\n", (actualMemUsed / 1024 / 1024 / 1024));
             System.out.println("Compression Completed...");
         } 
         else if (args[1].equals("decomp")) {
@@ -159,13 +159,14 @@ class HGC {
 	        recordCpuUsage(0, command);
 	        // Decompression using bsc decoder
             HGCDecompress.bscDecompression();
+			//HGCDecompress.sevenZipDecompression();
             recordCpuUsage(0, command);
 	        Decompress.stringToAsciiRleDecode(seq_paths.get(0),dr);
 	        recordCpuUsage(0, command);
 	        // Decompressing T.fa
             HGCDecompress.seqDecompress(dr);  
             recordCpuUsage(0, command);
-	        calculateAverageCpuUsage();
+	        calculatePeakCpuUsage();
             if(!useFileList){
                  // Combine files after decompression
                 List<String> inputFiles = new   ArrayList<>();
@@ -179,10 +180,10 @@ class HGC {
                 deleteFiles(inputFiles);
             }
             Long end_time = System.currentTimeMillis();
-            System.out.println("Total decompression time = " + (1.0 * end_time - start_time) / 1000 + " S");
+            System.out.println("Total decompression time = " + (1.0 * end_time - start_time) / 1000 + " s");
             double afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             double actualMemUsed = afterUsedMem - beforeUsedMem;
-            System.out.printf("Actual memory used = %.3f GB\n", (actualMemUsed / 1024 / 1024 / 1024));
+            System.out.printf("Actual memory used = %.3f GiB\n", (actualMemUsed / 1024 / 1024 / 1024));
             System.out.println("Decompression Completed...");
         }
     }
@@ -190,7 +191,7 @@ class HGC {
      // Function to generate file names based on the number of splits
     private static List<String> generateSeqPaths(int numberOfSplits) {
         List<String> seq_paths = new ArrayList<>();
-        seq_paths.add("R");  // The first 20% goes to R.fa
+        seq_paths.add("R");  // The first 40-60% goes to R.fa
         for (int i = 0; i < numberOfSplits; i++) {
             seq_paths.add("T" + i);
         }
@@ -220,7 +221,7 @@ class HGC {
 
 			// Check if the returned CPU usage string is valid
 			if (isValidCpuUsage(cpuUsageStr)) {
-				double cpuUsage = Double.parseDouble(cpuUsageStr.trim());  // Convert to double
+				Double cpuUsage = Double.parseDouble(cpuUsageStr.trim()); // Convert to double 
 				cpuUsages.add(cpuUsage);  // Add the valid value to the list
 			} else {
 				System.out.println("Invalid CPU usage returned: " + cpuUsageStr);
@@ -231,20 +232,17 @@ class HGC {
 	}
 
 // Function to calculate the average of all recorded CPU usages
-// Function to calculate the average of all recorded CPU usages
-static void calculateAverageCpuUsage() {
+static void calculatePeakCpuUsage() {
     if (cpuUsages.isEmpty()) {
         System.out.println("No CPU usage data recorded.");
         return;  // Exit the function if no data is available
     }
-
-    double totalCpuUsage = 0.0;
-    for (double usage : cpuUsages) {
-        totalCpuUsage += usage;
+	List <Integer>integerList = new ArrayList<>();
+	for (Double d : cpuUsages) {
+        integerList.add((int) Math.round(d)); // Using Math.round() for rounding
     }
-
-    double averageCpuUsage = totalCpuUsage / cpuUsages.size();  // Calculate the average CPU usage
-    System.out.println("Average CPU Usage: " + averageCpuUsage + "%");  // Print the average CPU usage
+    Integer maxValue = Collections.max(integerList);
+    System.out.println("The peak CPU usage: " + maxValue);
     cpuUsages.clear();
 }
 
@@ -265,20 +263,34 @@ static boolean isValidCpuUsage(String cpuUsage) {
 
     // Function to split the Fasta file
     private static void splitFastaFile(String inputFilename, int numberOfSplits) {
-        String outputFileR = "R";   // First 20%
+        String outputFileR = "R";   // First 40-60%
 
         try {
             // Read the input file into memory
             Path inputPath = Paths.get(inputFilename);
+			
+			//File type checking
+			/*String fileType="";
+			String fileName = new File(inputFilename).getName();
+			int dotIndex = fileName.lastIndexOf('.');
+			if (dotIndex != -1) 
+				fileType = fileName.substring(dotIndex + 1);
+			if (fileType.equals("fa") || fileType.equals("fasta") || fileType.equals("fna") || fileType.equals("consensus_fasta") || fileType.equals("fastq")) {
+				System.out.println("Only the bases of the Raw, FASTA/Q or multi-FASTA file can be compressed.");
+			}*/
+			
             byte[] inputBytes = Files.readAllBytes(inputPath);
             int totalSize = inputBytes.length;
 
-            // Calculate the size for the first 20%
-            int splitSizeR = totalSize / 5;  // 20% of the total file size
+            // Calculate the Ref. size
+			Scanner sc = new Scanner(System.in);
+			System.out.print("Enter Split (s = 2/1.66/1.42/1.25/1.1) ratio: "); //Ref. size 50% -90% of the total file size
+			double s = sc.nextDouble();
+            int splitSizeR = (int) (totalSize / s);  
             int remainingSize = totalSize - splitSizeR;
-            int splitSizeT = remainingSize / numberOfSplits;  // Divide the remaining 80%
+            int splitSizeT = remainingSize / numberOfSplits;  // Divide the remaining 60-40%
 
-            // Write the first 20% to R.fa
+            // Write the first 40-60% to R.fa
             try (FileOutputStream outFileR = new FileOutputStream(outputFileR)) {
                 outFileR.write(inputBytes, 0, splitSizeR);
             }

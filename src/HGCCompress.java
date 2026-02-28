@@ -267,6 +267,18 @@ class HGCCompress {
     static void tarSeqExt(int seq_num, GenSequence seq) { 
         String path = seq_paths.get(seq_num);
         File f = new File(path);
+		
+		//File type checking
+		/*String fileType="";
+		String fileName = new File(path).getName();
+		int dotIndex = fileName.lastIndexOf('.');
+		if (dotIndex != -1) {
+			fileType = fileName.substring(dotIndex + 1);
+		}
+		if (fileType.equals("fa") || fileType.equals("fasta") || fileType.equals("fna") || fileType.equals("fastq")) {
+				System.out.println("Only the primary bases of the Raw, FASTA/Q or multi-FASTA target file can be compressed.");
+		}*/
+		
         int seq_code_len = 0; 
         char[] seq_code = new char[max_cha_num]; //So target max allowed size = 256 MB
 		String str;
@@ -275,20 +287,33 @@ class HGCCompress {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(f));
-                str = br.readLine();
-                for (i = 0; i < str.length(); i++) {
-                    ch = str.charAt(i);
-                    ch = Character.toUpperCase(ch);
-                    if (ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' || ch == 'U') {
-                        seq_code[seq_code_len++] = ch;
-                    }
-                }
+            str = br.readLine();
+            while(str != null){
+				if(str.charAt(0)=='>' || str.charAt(0)=='@'){
+					str = br.readLine();
+				}
+				else{
+					for (i = 0; i < str.length(); i++) {
+						ch = str.charAt(i);
+						ch = Character.toUpperCase(ch);
+						if (ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' || ch == 'U'){
+							seq_code[seq_code_len++] = ch;
+						}
+						else{
+							//System.out.println("The target sequence cannot be compressed losslessly using HGC; it includes non-primary genome characters like "+ ch +".");
+							//System.exit(0);
+						}
+					}
+					str = br.readLine();
+				}
+			}
 			br.close();
         } catch (Exception e) { 
             System.out.println(e);
         } 
         seq.setCode(seq_code);
         seq.setCodeLen(seq_code_len);
+		//System.out.println(seq_code_len);
     } 	
 
     static void saveMatRes(BufferedWriter bw, MatEntry me) {
@@ -336,13 +361,15 @@ class HGCCompress {
 	// 7-zip Compression
 	public static void sevenZipCompression() {
 		try{
+			deleteFile(new File("ZipC.7z"));
+			String path = seq_paths.get(0)+".targ";
 			//Please use the following for Linux platform
-	//String zip = "7za a " + "ZipC" + ".7z " + "chr.id " + "chr.rgc" + " -m0=PPMD"; 
+	String zip = "7za a " + "ZipC" + ".7z " + path + " chr.rgc" + " -m0=PPMD"; 
 			//Please use the following for Windows platform
-	String zip = "7z a " + "ZipC" + ".7z " + "chr.id " + "chr.rgc" + " -m0=PPMD"; 
+	//String zip = "7z a " + "ZipC" + ".7z " + path + " chr.rgc" + " -m0=PPMD"; 
 			Process p = Runtime.getRuntime().exec(zip);
 			p.waitFor();
-			deleteFile(new File("chr.id"));
+			deleteFile(new File(path));
             deleteFile(new File("chr.rgc"));
 		}
 		catch(Exception e){
@@ -411,6 +438,18 @@ class HGCCompress {
 	
 	static void refSeqExt(String ref_path) {
         File f = new File(ref_path);
+		
+		//File type checking
+		/*String fileType="";
+		String fileName = new File(ref_path).getName();
+		int dotIndex = fileName.lastIndexOf('.');
+		if (dotIndex != -1) {
+			fileType = fileName.substring(dotIndex + 1);
+		}
+		if (fileType.equals("fa") || fileType.equals("fasta") || fileType.equals("fna") || fileType.equals("fastq")) {
+				System.out.println("Only the primary bases of the FASTA/Q or multi-FASTA reference file can be compressed.");
+		}*/
+		
         ref_code = new char[max_cha_num];
         ref_code_len = 0;
         int i; 
@@ -420,17 +459,30 @@ class HGCCompress {
         try {
             br = new BufferedReader(new FileReader(f));
             str = br.readLine();
-            for (i = 0; i < str.length(); i++) {
-                ch = str.charAt(i);
-                ch = Character.toUpperCase(ch);
-                if (ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' || ch == 'U'){
-                    ref_code[ref_code_len++] = ch;
-                }
-            }
+            while(str != null){
+				if(str.charAt(0)=='>' || str.charAt(0)=='@'){
+					str = br.readLine();
+				}
+				else{
+					for (i = 0; i < str.length(); i++) {
+						ch = str.charAt(i);
+						ch = Character.toUpperCase(ch);
+						if (ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' || ch == 'U'){
+							ref_code[ref_code_len++] = ch;
+						}
+						else{
+							//System.out.println("The reference sequence cannot be compressed losslessly using HGC; it includes non-primary genome characters like "+ ch +".");
+							//System.exit(0);
+						}
+					}
+					str = br.readLine();
+				}
+			}
 			br.close();
         } catch (Exception e) {
              System.out.println(e);
         } 
+		//System.out.println(ref_code_len);
     }
 	
 	static void seqCompress(int pool_size, int dr1) { 

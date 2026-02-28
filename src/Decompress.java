@@ -12,7 +12,10 @@ class Decompress{
 			String compressedFileName = inputFileName + ".targ";
 			File fr = new File(compressedFileName);
 			BufferedReader br = new BufferedReader(new FileReader(fr));
+			//String out_folder_path = "Output/";
 			File fw = new File(inputFileName);
+			//if (fw.exists())
+				//fw.delete();
 			BufferedWriter bw = new BufferedWriter(new FileWriter(fw));
 			while((info = br.readLine()) != null){
 				info = modifiedRleDecode(info);

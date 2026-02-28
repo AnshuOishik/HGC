@@ -9,7 +9,7 @@ class CPUUsage {
     	String cpuUsage = "Failed to retrieve CPU usage"; // Default message if retrieval fails
         try {
             // Step 1: Find the PID of the compression process 
-            String processName = "java -Xms12g hgc.HGC "+command;  // Example process name
+            String processName = "java hgc.HGC "+command;  // Example process name
             String[] cmd = { "/bin/sh", "-c", "pgrep -f \"" + processName + "\"" };
             Process process = Runtime.getRuntime().exec(cmd);
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -36,7 +36,7 @@ class CPUUsage {
             }
 
             // Print the CPU usage as originally intended
-            System.out.println("CPU usage of the process: " + cpuUsage + "%");
+            //System.out.println("CPU usage of the process: " + cpuUsage + "%");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +50,7 @@ class CPUUsage {
         String cpuUsage = "Failed to retrieve CPU usage"; // Default message if retrieval fails
         try {
             // Step 1: Find the PID of the decompression process
-            String processName = "java -Xms4g hgc.HGC "+command;  // Example decompression process name
+            String processName = "java hgc.HGC "+command;  // Example decompression process name
             String[] cmd = { "/bin/sh", "-c", "pgrep -f \"" + processName + "\"" };
             Process process = Runtime.getRuntime().exec(cmd);
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -77,22 +77,13 @@ class CPUUsage {
             }
 
             // Print the CPU usage as originally intended
-            System.out.println("CPU usage of the process: " + cpuUsage + "%");
+            //System.out.println("CPU usage of the process: " + cpuUsage + "%");
 
         } catch (Exception e) {
             e.printStackTrace();
             return "Error: " + e.getMessage();  // Return error message if something goes wrong
         }
         return cpuUsage.trim();  // Return the CPU usage as a string
-    }
-
-    public static void main(String[] args) {
-        // Test the methods
-        //String cpuUsage = compCpuUsage(command);
-        //System.out.println("Compression CPU Usage (returned): " + cpuUsage + "%");
-
-        //String decomCpuUsage = decomCpuUsage(command);
-        //System.out.println("Decompression CPU Usage (returned): " + decomCpuUsage + "%");
     }
 }
 

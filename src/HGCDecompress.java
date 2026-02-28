@@ -15,6 +15,7 @@ class HGCDecompress {
 	
 	static void saveSeqFile(GenSequence seq, int seq_num) {
         String str = seq_paths.get(seq_num);
+		//System.out.println(str);
         String out_folder_path = "Output/";
         File f = new File(out_folder_path + str);
         if (f.exists())
@@ -239,9 +240,9 @@ class HGCDecompress {
 	public static void sevenZipDecompression() {
 		try{
 			//Please use the following for Linux platform
-			//String unzip = "7za e " + "ZipC.7z" + " -aos";
+			String unzip = "7za e " + "ZipC.7z" + " -aos";
 			//Please use the following for Windows platform
-			String unzip = "7z e " + "ZipC.7z" + " -aos";
+			//String unzip = "7z e " + "ZipC.7z" + " -aos";
 			Process p = Runtime.getRuntime().exec(unzip);
 			p.waitFor();
 		}

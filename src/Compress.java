@@ -9,7 +9,7 @@ class Compress{
 	//Strings to extended ASCII to modified RLE code
 	static void stringToAsciiRleEncode(String inputFileName, int dr1){
 		dr = dr1;
-		int len, code_L = 0, i, k, step_len, code_ascii_value, rem_len;
+		int len=0, code_L = 0, i, k, step_len, code_ascii_value, rem_len;
 		char ch;
 		int[] two_bit_code;
 		try{
@@ -19,63 +19,77 @@ class Compress{
 			File f1 = new File(outputFileName);
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 			while((info = br.readLine()) != null){
-				len = info.length();
-				two_bit_code = new int[len];
-				//Converting to two_bit_code
-				for (i = 0; i < len; i++) {
-					ch = info.charAt(i);
-					two_bit_code[code_L++] = twoBitIntCoding(ch);
+				if(info.charAt(0)=='>' || info.charAt(0)=='@'){
+					continue;
 				}
-				sb = new StringBuilder(len);
-		
-				//Converting two_bit_code to extended ASCII code
-				step_len = code_L/4;
-				code_ascii_value = 0;
-				for (i =0; i < step_len; i++) {
-					code_ascii_value = 0;
-					for (k = 3; k >= 0; k--) {
-						code_ascii_value <<= 2;
-						code_ascii_value += two_bit_code[4*i+k];
-					}
-					//For A, C, G, T/U and 49 (1) (Flag for RLE), and for value 10 and 13 
-					if(code_ascii_value == 10 || code_ascii_value == 13|| code_ascii_value == 65 || code_ascii_value == 67 || code_ascii_value == 71 || code_ascii_value == 84|| code_ascii_value == 85 || code_ascii_value == 49) 
-						for (k = 0; k <= 3; k++){
-							if(two_bit_code[4*i+k] == 0)
-								sb.append('A');
-							else if(two_bit_code[4*i+k] == 1)
-								sb.append('C');
-							else if(two_bit_code[4*i+k] == 2)
-								sb.append('G');
-							else if(two_bit_code[4*i+k] == 3)
-								if(dr == 1) //For DNA
-									sb.append('T');
-								else //For RNA
-									sb.append('U');
-						}
-					else
-						sb.append((char)code_ascii_value);
-				}
-				//If odd length i.e. 1,2,3 remains
-				rem_len = code_L%4; 
-				for (i = code_L-rem_len; i < code_L ; i++){
-					if(two_bit_code[i] == 0)
-						sb.append('A');
-					else if(two_bit_code[i] == 1)
-						sb.append('C');
-					else if(two_bit_code[i] == 2)
-						sb.append('G');
-					else if(two_bit_code[i] == 3)
-						if(dr == 1) //For DNA
-							sb.append('T');
-						else //For RNA
-							sb.append('U');
-				}
-				info = sb.toString();
-				//modified RLE
-				info = modifiedRleEncode(info);
-				bw.write(info);
-				bw.write("\n");
+				len += info.length();
 			}
+			two_bit_code = new int[len];
+			br = new BufferedReader(new FileReader(f));
+			while((info = br.readLine()) != null){
+				//System.out.println(info);
+				if(info.charAt(0)=='>' || info.charAt(0)=='@'){
+					continue;
+				}
+				//Converting to two_bit_code
+				for (i = 0; i < info.length(); i++) {
+					ch = info.charAt(i);
+					ch = Character.toUpperCase(ch);
+					if (ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' || ch == 'U'){
+						two_bit_code[code_L++] = twoBitIntCoding(ch);
+					}
+				}
+			}
+			sb = new StringBuilder(len);
+		
+			//Converting two_bit_code to extended ASCII code
+			step_len = code_L/4;
+			code_ascii_value = 0;
+			for (i =0; i < step_len; i++) {
+				code_ascii_value = 0;
+				for (k = 3; k >= 0; k--) {
+					code_ascii_value <<= 2;
+					code_ascii_value += two_bit_code[4*i+k];
+				}
+				//For A, C, G, T/U and 49 (1) (Flag for RLE), and for value 10 and 13 
+				if(code_ascii_value == 10 || code_ascii_value == 13|| code_ascii_value == 65 || code_ascii_value == 67 || code_ascii_value == 71 || code_ascii_value == 84|| code_ascii_value == 85 || code_ascii_value == 49) 
+					for (k = 0; k <= 3; k++){
+						if(two_bit_code[4*i+k] == 0)
+							sb.append('A');
+						else if(two_bit_code[4*i+k] == 1)
+							sb.append('C');
+						else if(two_bit_code[4*i+k] == 2)
+							sb.append('G');
+						else if(two_bit_code[4*i+k] == 3)
+							if(dr == 1) //For DNA
+								sb.append('T');
+							else //For RNA
+								sb.append('U');
+					}
+				else
+					sb.append((char)code_ascii_value);
+			}
+			//If odd length i.e. 1,2,3 remains
+			rem_len = code_L%4; 
+			for (i = code_L-rem_len; i < code_L ; i++){
+				if(two_bit_code[i] == 0)
+					sb.append('A');
+				else if(two_bit_code[i] == 1)
+					sb.append('C');
+				else if(two_bit_code[i] == 2)
+					sb.append('G');
+				else if(two_bit_code[i] == 3)
+					if(dr == 1) //For DNA
+						sb.append('T');
+					else //For RNA
+						sb.append('U');
+			}
+			info = sb.toString();
+			//modified RLE
+			info = modifiedRleEncode(info);
+			bw.write(info);
+			bw.write("\n");
+			
 			br.close();
 			bw.flush();
 			info = null;
