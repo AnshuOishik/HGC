@@ -5,7 +5,6 @@ import java.nio.file.*;
 import java.util.*;
 
 class HGC {
-	static List<Double> cpuUsages = new ArrayList<>();
 	static String command = "";
     public static void main(String[] a) throws IOException {
         // Check if file name is passed as command line argument
@@ -108,10 +107,9 @@ class HGC {
         int dr =args[1].equals("comp")?Integer.parseInt(args[6]):Integer.parseInt(args[5]);;
 		if (args[1].equals("comp")) {
             System.out.println("Only the primary bases of the raw, FASTA/Q or multi-FASTA file can be compressed using HGC!.");
-            double beforeUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             Long start_time = System.currentTimeMillis();
             System.out.println("Compression Started...");
-             List<String> seq_paths;
+            List<String> seq_paths;
             if(useFileList){
                 seq_paths = readSeqPathsFromFile(args[0]);
             }
@@ -120,32 +118,27 @@ class HGC {
                 seq_paths = generateSeqPaths(number_of_splits);
             }
             HGCCompress.beginingSettings(seq_paths, opt_k_mer_len);
-            recordCpuUsage(1, command);
+            
             HGCCompress.seqCompress(thread_pool_size, dr);
-            recordCpuUsage(1, command);
+            
 	        Compress.stringToAsciiRleEncode(seq_paths.get(0), dr);
-	        recordCpuUsage(1, command);
+	        
             // Compression using bsc encoder
             HGCCompress.bscCompression();
+			
+			// Compression using 7zip encoder
 			//HGCCompress.sevenZipCompression();
-            recordCpuUsage(1, command);
-            calculatePeakCpuUsage();
-            
-
-             // Delete files in seq_paths
+        
+            // Delete files in seq_paths
             if(!useFileList){
 				deleteFiles(seq_paths);
             }
 
             Long end_time = System.currentTimeMillis();
             System.out.println("Total compression time = " + (1.0 * end_time - start_time) / 1000 + " s");
-            double afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            double actualMemUsed = afterUsedMem - beforeUsedMem;
-            System.out.printf("Actual memory used = %.3f GiB\n", (actualMemUsed / 1024 / 1024 / 1024));
             System.out.println("Compression Completed...");
         } 
         else if (args[1].equals("decomp")) {
-            double beforeUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             Long start_time = System.currentTimeMillis();
             System.out.println("Decompression Started...");
             List<String> seq_paths;
@@ -156,17 +149,17 @@ class HGC {
                 seq_paths = generateSeqPaths(number_of_splits);
             }
             HGCDecompress.beginingSettings(seq_paths, opt_k_mer_len);
-	        recordCpuUsage(0, command);
+	        
 	        // Decompression using bsc decoder
             HGCDecompress.bscDecompression();
+			
+			// Decompression using 7zip decoder
 			//HGCDecompress.sevenZipDecompression();
-            recordCpuUsage(0, command);
+            
 	        Decompress.stringToAsciiRleDecode(seq_paths.get(0),dr);
-	        recordCpuUsage(0, command);
-	        // Decompressing T.fa
+
             HGCDecompress.seqDecompress(dr);  
-            recordCpuUsage(0, command);
-	        calculatePeakCpuUsage();
+
             if(!useFileList){
                  // Combine files after decompression
                 List<String> inputFiles = new   ArrayList<>();
@@ -181,9 +174,6 @@ class HGC {
             }
             Long end_time = System.currentTimeMillis();
             System.out.println("Total decompression time = " + (1.0 * end_time - start_time) / 1000 + " s");
-            double afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            double actualMemUsed = afterUsedMem - beforeUsedMem;
-            System.out.printf("Actual memory used = %.3f GiB\n", (actualMemUsed / 1024 / 1024 / 1024));
             System.out.println("Decompression Completed...");
         }
     }
@@ -211,55 +201,7 @@ class HGC {
             e.printStackTrace();
         }
         return seq_paths;
-    }
-    
-    static void recordCpuUsage(int flag, String command) {
-		try {
-			// If flag = 1 record CPU usage from the compression process
-			// Else record CPU usage from the decompression process
-			String cpuUsageStr = flag==1?CPUUsage.compCpuUsage(command):CPUUsage.decomCpuUsage(command);  // Get the CPU usage as a string
-
-			// Check if the returned CPU usage string is valid
-			if (isValidCpuUsage(cpuUsageStr)) {
-				Double cpuUsage = Double.parseDouble(cpuUsageStr.trim()); // Convert to double 
-				cpuUsages.add(cpuUsage);  // Add the valid value to the list
-			} else {
-				System.out.println("Invalid CPU usage returned: " + cpuUsageStr);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-// Function to calculate the average of all recorded CPU usages
-static void calculatePeakCpuUsage() {
-    if (cpuUsages.isEmpty()) {
-        System.out.println("No CPU usage data recorded.");
-        return;  // Exit the function if no data is available
-    }
-	List <Integer>integerList = new ArrayList<>();
-	for (Double d : cpuUsages) {
-        integerList.add((int) Math.round(d)); // Using Math.round() for rounding
-    }
-    Integer maxValue = Collections.max(integerList);
-    System.out.println("The peak CPU usage: " + maxValue);
-    cpuUsages.clear();
-}
-
-
-// Function to validate if the CPU usage string is a valid number
-static boolean isValidCpuUsage(String cpuUsage) {
-    try {
-        // Try to parse the CPU usage as a double
-        Double.parseDouble(cpuUsage.trim());
-        return true;  // Return true if the string is a valid number
-    } catch (NumberFormatException e) {
-        // Return false if parsing fails
-        return false;
-    }
-}
-
-
+    }  
 
     // Function to split the Fasta file
     private static void splitFastaFile(String inputFilename, int numberOfSplits) {
@@ -268,16 +210,6 @@ static boolean isValidCpuUsage(String cpuUsage) {
         try {
             // Read the input file into memory
             Path inputPath = Paths.get(inputFilename);
-			
-			//File type checking
-			/*String fileType="";
-			String fileName = new File(inputFilename).getName();
-			int dotIndex = fileName.lastIndexOf('.');
-			if (dotIndex != -1) 
-				fileType = fileName.substring(dotIndex + 1);
-			if (fileType.equals("fa") || fileType.equals("fasta") || fileType.equals("fna") || fileType.equals("consensus_fasta") || fileType.equals("fastq")) {
-				System.out.println("Only the bases of the Raw, FASTA/Q or multi-FASTA file can be compressed.");
-			}*/
 			
             byte[] inputBytes = Files.readAllBytes(inputPath);
             int totalSize = inputBytes.length;
@@ -321,7 +253,6 @@ static boolean isValidCpuUsage(String cpuUsage) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     writer.write(line);
-                    //writer.newLine();  // Ensure lines are properly separated
                 }
                 reader.close();
             }
