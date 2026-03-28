@@ -11,10 +11,10 @@ Java 18
 
 ## Supported File Formats
 
-- Genome main domian of raw sequence files, FASTA/Q and Multi-FASTA
+- Genome main domian of raw sequence, FASTA/Q and Multi-FASTA files
 
-## OptK-mer: Optimal k-mer Length
-The OptK-mer algorithm used the randomization method to determine the ideal k-mer length. HGC uses the ideal k-mer length discovered using OptK-mer to compress the particular sequence.
+## OptKMer: Optimal k-mer Length
+The OptKMer algorithm used the randomization method to determine the ideal k-mer length. HGC uses the ideal k-mer length discovered using OptKMer to compress the particular sequence.
 
 ## Compilation Command
 
@@ -45,7 +45,7 @@ $ java optkmer.Main In 2 22 2 0 1
 6. Then for reference-free the 1 is the number of split.
 
 ## HGC: Hybrid Genome Compression
-The OptK-mer technique yields the ideal k-mer length, which is used by HGC to compress sequences.
+The OptKMer technique yields the ideal k-mer length, which is used by HGC to compress sequences.
 
 ## Compilation Command
 
